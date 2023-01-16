@@ -1,0 +1,38 @@
+[build-system]
+requires = [ "setuptools", "setuptools-scm",]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "gremlinpython"
+version = "3.7.0.dev-1673905804"
+description = "Gremlin-Python for Apache TinkerPop"
+classifiers = [ "Intended Audience :: Developers", "License :: OSI Approved :: Apache Software License", "Natural Language :: English", "Programming Language :: Python :: 3",]
+dependencies = [ "nest_asyncio", "aiohttp>=3.8.0,<4.0.0", "aenum>=1.4.5,<4.0.0", "isodate>=0.6.0,<1.0.0",]
+
+[legacy]
+url = "http://tinkerpop.apache.org"
+long_description = ".. Licensed to the Apache Software Foundation (ASF) under one\n.. or more contributor license agreements.  See the NOTICE file\n.. distributed with this work for additional information\n.. regarding copyright ownership.  The ASF licenses this file\n.. to you under the Apache License, Version 2.0 (the\n.. \"License\"); you may not use this file except in compliance\n.. with the License.  You may obtain a copy of the License at\n..\n..  http://www.apache.org/licenses/LICENSE-2.0\n..\n.. Unless required by applicable law or agreed to in writing,\n.. software distributed under the License is distributed on an\n.. \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n.. KIND, either express or implied.  See the License for the\n.. specific language governing permissions and limitations\n.. under the License.\n\n=================================\nApache TinkerPop - Gremlin Python\n=================================\n\n`Apache TinkerPop™ <https://tinkerpop.apache.org>`_\nis a graph computing framework for both graph databases (OLTP) and\ngraph analytic systems (OLAP). `Gremlin <https://tinkerpop.apache.org/gremlin.html>`_\nis the graph traversal language of\nTinkerPop. It can be described as a functional, data-flow language that enables users to succinctly express complex\ntraversals on (or queries of) their application's property graph.\n\nGremlin-Python implements Gremlin within the Python language and can be used on any Python virtual machine including\nthe popular CPython machine. Python’s syntax has the same constructs as Java including \"dot notation\" for function\nchaining ``(a.b.c)``, round bracket function arguments ``(a(b,c))``, and support for global namespaces\n``(a(b()) vs a(__.b()))``. As such, anyone familiar with Gremlin-Java will immediately be able to work with\nGremlin-Python. Moreover, there are a few added constructs to Gremlin-Python that make traversals a bit more succinct.\n\nGremlin-Python is designed to connect to a \"server\" that is hosting a TinkerPop-enabled graph system. That \"server\"\ncould be `Gremlin Server <https://tinkerpop.apache.org/docs/current/reference/#gremlin-server>`_ or a\n`remote Gremlin provider <https://tinkerpop.apache.org/docs/current/reference/#connecting-rgp>`_ that exposes\nprotocols by which Gremlin-Python can connect.\n\nA typical connection to a server running on \"localhost\" that supports the Gremlin Server protocol using websockets\nfrom the Python shell looks like this:\n\n    >>> from gremlin_python.process.anonymous_traversal import traversal\n    >>> from gremlin_python.driver.driver_remote_connection import DriverRemoteConnection\n    >>> g = traversal().withRemote(DriverRemoteConnection('ws://localhost:8182/gremlin','g'))\n\nOnce \"g\" has been created using a connection, it is then possible to start writing Gremlin traversals to query the\nremote graph:\n\n    >>> g.V().both()[1:3].toList()\n    [v[2], v[4]]\n    >>> g.V().both()[1].toList()\n    [v[2]]\n    >>> g.V().both().name.toList()\n    [lop, vadas, josh, marko, marko, josh, peter, ripple, lop, marko, josh, lop]\n\n-----------------\nSample Traversals\n-----------------\n\nThe Gremlin language allows users to write highly expressive graph traversals and has a broad list of functions that\ncover a wide body of features. The `Reference Documentation <https://tinkerpop.apache.org/docs/current/reference/#graph-traversal-steps>`_\ndescribes these functions and other aspects of the TinkerPop ecosystem including some specifics on\n`Gremlin in Python <https://tinkerpop.apache.org/docs/current/reference/#gremlin-python>`_ itself. Most of the\nexamples found in the documentation use Groovy language syntax in the\n`Gremlin Console <https://tinkerpop.apache.org/docs/current/tutorials/the-gremlin-console/>`_.\nFor the most part, these examples should generally translate to Python with\n`some modification <https://tinkerpop.apache.org/docs/current/reference/#gremlin-python-differences>`_. Given the\nstrong correspondence between canonical Gremlin in Java and its variants like Python, there is a limited amount of\nPython-specific documentation and examples. This strong correspondence among variants ensures that the general\nGremlin reference documentation is applicable to all variants and that users moving between development languages can\neasily adopt the Gremlin variant for that language.\n\nCreate Vertex\n^^^^^^^^^^^^^\n\n.. code:: python\n\n    from gremlin_python.process.traversal import T\n    from gremlin_python.process.traversal import Cardinality\n\n    id = T.id\n    single = Cardinality.single\n\n    def create_vertex(self, vid, vlabel):\n        # default database cardinality is used when Cardinality argument is not specified\n        g.addV(vlabel).property(id, vid). \\\n          property(single, 'name', 'Apache'). \\\n          property('lastname', 'Tinkerpop'). \\\n          next()\n\nFind Vertices\n^^^^^^^^^^^^^\n\n.. code:: python\n\n    def list_all(self, limit=500):\n        g.V().limit(limit).elementMap().toList()\n\n    def find_vertex(self, vid):\n        g.V(vid).elementMap().next()\n\n    def list_by_label_name(self, vlabel, name):\n        g.V().has(vlabel, 'name', name).elementMap().toList()\n\nUpdate Vertex\n^^^^^^^^^^^^^\n\n.. code:: python\n\n    from gremlin_python.process.traversal import Cardinality\n\n    single = Cardinality.single\n\n    def update_vertex(self, vid, name):\n        g.V(vid).property(single, 'name', name).next()\n\nNOTE that versions suffixed with \"rc\" are considered release candidates (i.e. pre-alpha, alpha, beta, etc.) and\nthus for early testing purposes only. These releases are not suitable for production."
+long_description_content_type = "text/x-rst"
+test_suite = "tests"
+data_files = [ "LICENSE", "NOTICE",]
+setup_requires = [ "pytest-runner==6.0.0", "importlib-metadata<5.0.0",]
+tests_require = [ "pytest>=4.6.4,<7.2.0", "mock>=3.0.5,<5.0.0", "radish-bdd==0.13.4", "PyHamcrest>=1.9.0,<3.0.0", "PyYAML>=5.3",]
+install_requires = [ "nest_asyncio", "aiohttp>=3.8.0,<4.0.0", "aenum>=1.4.5,<4.0.0", "isodate>=0.6.0,<1.0.0",]
+
+[project.license]
+text = "Apache 2"
+
+[legacy.extras_require]
+kerberos = "kerberos>=1.3.0,<2.0.0"
+ujson = "ujson>=2.0.0"
+
+[tool.setuptools]
+packages = [ "gremlin_python", "gremlin_python.driver", "gremlin_python.driver.aiohttp", "gremlin_python.process", "gremlin_python.structure", "gremlin_python.structure.io",]
+
+[tool.poetry]
+version = "3.7.0.dev-1673905804"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+gitpython = "^3.1.30"
+toml = "^0.10.2"

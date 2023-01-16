@@ -1,0 +1,4 @@
+nest_asyncio
+aiohttp<4.0.0,>=3.8.0
+aenum<4.0.0,>=1.4.5
+isodate<1.0.0,>=0.6.0
